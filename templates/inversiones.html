@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Inversiones</h2>
+</div>
+
+<!-- Formulario -->
+<div class="form-card">
+    <h6 class="text-muted mb-3">AGREGAR INVERSIÓN</h6>
+    <form action="/inversiones/agregar" method="POST">
+        <div class="row g-3">
+            <div class="col-md-3">
+                <input type="text" name="nombre" class="form-control" placeholder="Nombre de la inversión" required>
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="tipo" class="form-control" placeholder="Tipo (ETF, Acción...)" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="monto_invertido" class="form-control" placeholder="Monto invertido" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="valor_actual" class="form-control" placeholder="Valor actual" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="fecha" class="form-control" required>
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">+</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Tabla -->
+<div class="tabla-card">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Tipo</th>
+                <th>Invertido</th>
+                <th>Valor Actual</th>
+                <th>Fecha</th>
+                <th>Ganancia / Pérdida</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in inversiones %}
+            <tr>
+                <td class="fw-semibold">{{ p['nombre'] }}</td>
+                <td><span class="badge bg-light text-dark">{{ p['tipo'] }}</span></td>
+                <td>${{ '%.2f' | format(p['monto_invertido']) }}</td>
+                <td>${{ '%.2f' | format(p['valor_actual']) }}</td>
+                <td>{{ p['fecha'] }}</td>
+                <td class="fw-semibold {{ 'color-ingreso' if p['resultado'] >= 0 else 'color-gasto' }}">
+                    {{ '+' if p['resultado'] >= 0 else '' }}${{ '%.2f' | format(p['resultado']) }}
+                </td>
+                <td>
+                    <form action="/inversiones/eliminar/{{ p['id'] }}" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not inversiones %}
+            <tr>
+                <td colspan="7" class="text-center text-muted py-4">No hay inversiones registradas</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

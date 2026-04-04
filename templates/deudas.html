@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Deudas</h2>
+</div>
+
+<!-- Formulario -->
+<div class="form-card">
+    <h6 class="text-muted mb-3">AGREGAR DEUDA</h6>
+    <form action="/deudas/agregar" method="POST">
+        <div class="row g-3">
+            <div class="col-md-4">
+                <input type="text" name="nombre" class="form-control" placeholder="¿De qué es la deuda?" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="monto_total" class="form-control" placeholder="Monto total" step="1" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="tasa_interes" class="form-control" placeholder="Tasa de interés %" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="fecha_inicio" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <input type="date" name="fecha_limite" class="form-control">
+            </div>
+        </div>
+        <div class="mt-3">
+            <button type="submit" class="btn btn-primary">Agregar Deuda</button>
+        </div>
+    </form>
+</div>
+
+<!-- Tabla -->
+<div class="tabla-card">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Monto Total</th>
+                <th>Monto Pagado</th>
+                <th>Pendiente</th>
+                <th>Tasa de Interés</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Límite</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in deudas %}
+            <tr>
+                <td class="fw-semibold">{{ p['nombre'] }}</td>
+                <td>${{ '%.2f' | format(p['monto_total']) }}</td>
+                <td>${{ '%.2f' | format(p['monto_pagado']) }}</td>
+                <td class="color-gasto fw-semibold">${{ '%.2f' | format(p['monto_pendiente']) }}</td>
+                <td>{{ p['tasa_interes'] }}%</td>
+                <td>{{ p['fecha_inicio'] }}</td>
+                <td>{{ p['fecha_limite'] or '—' }}</td>
+                <td>
+                    <form action="/deudas/eliminar/{{ p['id'] }}" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not deudas %}
+            <tr>
+                <td colspan="8" class="text-center text-muted py-4">No hay deudas registradas</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">Transacciones</h2>
+</div>
+
+<!-- Formulario -->
+<div class="form-card">
+    <h6 class="text-muted mb-3">AGREGAR TRANSACCIÓN</h6>
+    <form action="/transacciones/agregar" method="POST">
+        <div class="row g-3">
+            <div class="col-md-2">
+                <input type="date" name="fecha" class="form-control" required>
+            </div>
+            <div class="col-md-2">
+                <select name="tipo" class="form-select" required>
+                    <option value="gasto">Gasto</option>
+                    <option value="ingreso">Ingreso</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="categoria" class="form-control" placeholder="Categoría" required>
+            </div>
+            <div class="col-md-2">
+                <input type="number" name="monto" class="form-control" placeholder="Monto" step="0.01" required>
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="descripcion" class="form-control" placeholder="Descripción (opcional)">
+            </div>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100">+</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Tabla -->
+<div class="tabla-card">
+    <table class="table table-hover mb-0">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Categoría</th>
+                <th>Monto</th>
+                <th>Descripción</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in transacciones %}
+            <tr>
+                <td>{{ t['fecha'] }}</td>
+                <td>
+                    <span class="badge-{{ t['tipo'] }}">
+                        {{ t['tipo'] | capitalize }}
+                    </span>
+                </td>
+                <td>{{ t['categoria'] }}</td>
+                <td class="fw-semibold {{ 'color-ingreso' if t['tipo'] == 'ingreso' else 'color-gasto' }}">
+                    ${{ '%.2f' | format(t['monto']) }}
+                </td>
+                <td class="text-muted">{{ t['descripcion'] or '—' }}</td>
+                <td>
+                    <form action="/transacciones/elminar/{{ t['id'] }}" method="POST">
+                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% if not transacciones %}
+            <tr>
+                <td colspan="6" class="text-center text-muted py-4">No hay transacciones registradas</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
