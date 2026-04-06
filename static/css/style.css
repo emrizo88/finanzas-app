@@ -75,3 +75,24 @@ body {
     border: 1px solid #f0f0f0;
 }
 
+
+body.login-body {
+    background: #f0f4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 100%;
+    max-width: 420px;
+    padding: 1rem;
+}
+
+.login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}

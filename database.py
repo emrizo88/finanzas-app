@@ -1,4 +1,5 @@
 import sqlite3
+from werkzeug.security import generate_password_hash
 
 DATABASE = 'finanzas.db'
 
@@ -205,8 +206,33 @@ def crear_tablas():
             valor_actual     REAL NOT NULL,
             fecha            TEXT NOT NULL
         );
+                         
+        CREATE TABLE IF NOT EXISTS users (
+            id          INTEGER PRIMARY KEY AUTOINCREMENT,
+            username       TEXT NOT NULL UNIQUE,
+            password        TEXT NOT NULL
+        );
     ''')
 
     conn.commit()
     conn.close()
 
+def registrar_usuario(username, password):
+    conn = get_connection()
+    cursor = conn.cursor()
+    password = generate_password_hash(password)
+    cursor.execute('''
+        INSERT INTO users (username,password) VALUES (?,?) ''', (username,password))
+    conn.commit()
+    conn.close()
+
+def obtener_usuario(username):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT * FROM users WHERE username = ?               
+    ''',(username,))
+    users = cursor.fetchone()
+    
+    return users
+    

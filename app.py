@@ -1,8 +1,21 @@
-from flask import Flask, request, redirect, url_for, render_template
-from database import crear_tablas, agregar_inversion_db,eliminar_inversion_db,obtener_inversiones,eliminar_deuda,agregar_deuda,obtener_deudas, eliminar_presupuesto_db,obtener_presupuestos, agregar_presupuesto_db,actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
+from flask import Flask, request, redirect, url_for, render_template, session
+from werkzeug.security import check_password_hash
+from database import crear_tablas, registrar_usuario, obtener_usuario,agregar_inversion_db,eliminar_inversion_db,obtener_inversiones,eliminar_deuda,agregar_deuda,obtener_deudas, eliminar_presupuesto_db,obtener_presupuestos, agregar_presupuesto_db,actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
 from datetime import date
+
 app = Flask(__name__)
+app.secret_key = 'clave_secreta_123'
 crear_tablas()
+
+@app.before_request
+def verificar_sesion():
+    if request.endpoint in ('login', 'register','static'):
+        return  
+
+    if 'usuario' not in session:
+        return redirect(url_for('login'))
+    
+
 
 @app.route('/')
 def index():
@@ -90,7 +103,42 @@ def eliminar_inversiones(id):
     eliminar_inversion_db(id)
     return redirect(url_for('inversiones'))
 
+@app.route('/login' ,methods =['POST','GET'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    
+    username = request.form['username']
+    password = request.form['password']
+    user = obtener_usuario(username)
+    if user is None:
+        return "Login Error: Usuario no encontrado"
+    
+    if (check_password_hash(user['password'],password)):
+        session['usuario'] = user['username']
+        
+        return redirect(url_for('index'))
+    else:
+        return "Login Error: Datos Incorrectos"
+    
+@app.route('/register',methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
 
+    username = request.form['username']
+    password = request.form['password']
+
+    try:
+        registrar_usuario(username,password)
+    except:
+        return "Error: Ese usuario ya es existente."
+    return redirect(url_for('login'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
 
 @app.route('/transacciones')
 def transacciones():
