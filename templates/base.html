@@ -33,7 +33,18 @@
             <i class="bi bi-graph-up-arrow"></i> Inversiones
         </a>
 
-        <a href="{{ url_for('logout') }}" class="nav-link mt-auto text-danger">
+        <!-- Usuario activo -->
+        <div class="usuario-card mt-auto mb-2">
+            <div class="usuario-avatar">
+                <i class="bi bi-person-fill"></i>
+            </div>
+            <div>
+                <div class="usuario-nombre">{{ session['username'] }}</div>
+                <small class="text-muted">Activo</small>
+            </div>
+        </div>
+
+        <a href="{{ url_for('logout') }}" class="nav-link text-danger">
             <i class="bi bi-box-arrow-left"></i> Cerrar sesión
         </a>
     </nav>

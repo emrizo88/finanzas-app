@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, render_template, session
+from flask import Flask, request, redirect, url_for, render_template, session, g
 from werkzeug.security import check_password_hash
 from database import crear_tablas, obtener_gastos_por_categoria,registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
 from datetime import date
@@ -13,6 +13,7 @@ def verificar_sesion():
         return
     if 'user_id' not in session:
         return redirect(url_for('login'))
+    g.username = session.get('username')
 
 @app.route('/')
 def index():
@@ -127,6 +128,7 @@ def login():
         return redirect(url_for('login'))
     if check_password_hash(user['password'], password):
         session['user_id'] = user['id']
+        session['username'] = user['username'] 
         return redirect(url_for('index'))
     else:
         return "Login Error: Datos Incorrectos"

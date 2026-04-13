@@ -96,3 +96,31 @@ body.login-body {
     padding: 2.5rem;
     box-shadow: 0 4px 24px rgba(0,0,0,0.08);
 }
+
+.usuario-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f0f4ff;
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.usuario-avatar {
+    background: #4361ee;
+    color: white;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.usuario-nombre {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1a1a2e;
+}
