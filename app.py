@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template, session
 from werkzeug.security import check_password_hash
-from database import crear_tablas, registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
+from database import crear_tablas, obtener_gastos_por_categoria,registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
 from datetime import date
 
 app = Flask(__name__)
@@ -19,7 +19,8 @@ def index():
     mes_actual = date.today().strftime('%Y-%m')
     user_id = session['user_id']
     resumen = obtener_resumen_mes(user_id, mes_actual)
-    return render_template("index.html", resumen=resumen, mes=mes_actual)
+    gastos_cat = obtener_gastos_por_categoria(user_id,mes_actual)
+    return render_template("index.html", resumen=resumen, gastos_cat=gastos_cat,mes=mes_actual)
 
 @app.route('/transacciones')
 def transacciones():

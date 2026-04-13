@@ -24,6 +24,17 @@ def obtener_resumen_mes(user_id, mes):
     conn.close()
     return {'ingresos': ingresos, 'gastos': gastos, 'balance': ingresos - gastos}
 
+def obtener_gastos_por_categoria(user_id,mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT categoria, SUM(monto) FROM transacciones 
+        WHERE tipo = 'gasto' AND user_id = ? AND fecha LIKE ? GROUP BY categoria
+    ''', (user_id, f'{mes}%',))
+    gastos_por_categoria = cursor.fetchall()
+    conn.close()
+    return gastos_por_categoria
+
 def obtener_transacciones(user_id):
     conn = get_connection()
     cursor = conn.cursor()

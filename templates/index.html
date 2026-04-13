@@ -11,60 +11,82 @@
 
 <!-- Tarjetas resumen -->
 <div class="row g-4 mb-4">
-
     <div class="col-md-4">
         <div class="tarjeta">
             <h6>Ingresos del mes</h6>
             <div class="monto color-ingreso">${{ '%.2f' | format(resumen['ingresos']) }}</div>
         </div>
     </div>
-
     <div class="col-md-4">
         <div class="tarjeta">
             <h6>Gastos del mes</h6>
             <div class="monto color-gasto">${{ '%.2f' | format(resumen['gastos']) }}</div>
         </div>
     </div>
-
     <div class="col-md-4">
         <div class="tarjeta">
             <h6>Balance</h6>
             <div class="monto color-balance">${{ '%.2f' | format(resumen['balance']) }}</div>
         </div>
     </div>
-
 </div>
-<!-- Gráfica -->
-<div class="row mt-4">
+
+<!-- Gráficas -->
+<div class="row g-4">
     <div class="col-md-4">
         <div class="tarjeta text-center">
-            <h6>Distribución del mes</h6>
+            <h6>Ingresos vs Gastos</h6>
             <canvas id="graficaMes"></canvas>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="tarjeta text-center">
+            <h6>Gastos por categoría</h6>
+            <canvas id="graficaCategorias"></canvas>
         </div>
     </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const ctx = document.getElementById('graficaMes').getContext('2d');
-    new Chart(ctx, {
+    // Gráfica ingresos vs gastos
+    const ctx1 = document.getElementById('graficaMes').getContext('2d');
+    new Chart(ctx1, {
         type: 'doughnut',
         data: {
             labels: ['Ingresos', 'Gastos'],
             datasets: [{
-                data: [
-                    {{ resumen['ingresos'] }},
-                    {{ resumen['gastos'] }}
-                ],
+                data: [{{ resumen['ingresos'] }}, {{ resumen['gastos'] }}],
                 backgroundColor: ['#2ecc71', '#e74c3c'],
                 borderWidth: 0
             }]
         },
         options: {
-            plugins: {
-                legend: { position: 'bottom' }
-            },
+            plugins: { legend: { position: 'bottom' } },
             cutout: '65%'
+        }
+    });
+
+    // Gráfica gastos por categoría
+    const categorias = {{ gastos_cat | map(attribute=0) | list | tojson }};
+    const montos = {{ gastos_cat | map(attribute=1) | list | tojson }};
+
+    const ctx2 = document.getElementById('graficaCategorias').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: categorias,
+            datasets: [{
+                data: montos,
+                backgroundColor: [
+                    '#4361ee', '#2ecc71', '#e74c3c', '#f39c12',
+                    '#9b59b6', '#1abc9c', '#e67e22', '#3498db'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { position: 'bottom' } },
         }
     });
 </script>
