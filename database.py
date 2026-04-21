@@ -35,6 +35,31 @@ def obtener_gastos_por_categoria(user_id,mes):
     conn.close()
     return gastos_por_categoria
 
+def obtener_deuda_del_mes(user_id,mes):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT nombre , monto_total, monto_pagado FROM deudas WHERE user_id = ? AND fecha_inicio <= ? AND (fecha_limite >= ? OR fecha_limite IS NULL)                 
+                   ''', (user_id, f'{mes}-31', f'{mes}-01'))
+    deudas_del_mes = cursor.fetchall()
+    resultado = []
+    for d in deudas_del_mes:
+        d = dict(d)
+        d['pendiente'] = d['monto_total'] - d['monto_pagado']
+        resultado.append(d)
+    conn.close()
+    return resultado
+
+def pagar_deuda(user_id,id,monto):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE deudas SET monto_pagado = (monto_pagado + ?) WHERE user_id = ? AND id = ?
+        ''', (monto,user_id,id))
+    conn.commit()
+    conn.close()
+    
+
 def obtener_transacciones(user_id):
     conn = get_connection()
     cursor = conn.cursor()

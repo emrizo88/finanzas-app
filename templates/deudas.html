@@ -63,6 +63,14 @@
                         <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
                     </form>
                 </td>
+                <td>
+                    <button class="btn btn-success btn-sm" 
+                        onclick="document.getElementById('formPagar').action='/deudas/pagar/{{ p['id'] }}';"
+                        data-bs-toggle="modal" 
+                        data-bs-target="#modalPagar">
+                        Pagar
+                    </button>
+                </td>
             </tr>
             {% endfor %}
             {% if not deudas %}
@@ -74,4 +82,24 @@
     </table>
 </div>
 
+<!-- Modal pagar deuda -->
+<div class="modal fade" id="modalPagar" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 16px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Registrar pago</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formPagar" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">MONTO A PAGAR</label>
+                        <input type="number" name="monto" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar pago</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

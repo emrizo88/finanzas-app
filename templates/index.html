@@ -45,6 +45,12 @@
             <canvas id="graficaCategorias"></canvas>
         </div>
     </div>
+    <div class="col-md-8">
+        <div class="tarjeta text-center">
+            <h6>Deudas del Mes</h6>
+            <canvas id="graficaDeudas"></canvas>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -77,6 +83,7 @@
         data: {
             labels: categorias,
             datasets: [{
+                label: 'Gastos',
                 data: montos,
                 backgroundColor: [
                     '#4361ee', '#2ecc71', '#e74c3c', '#f39c12',
@@ -89,6 +96,29 @@
             plugins: { legend: { position: 'bottom' } },
         }
     });
+
+    const nombresDeudas = {{ deudas_mes | map(attribute="nombre") | list | tojson }};
+    const montosDeudas = {{ deudas_mes | map(attribute="pendiente") | list | tojson }};
+    const ctx3 = document.getElementById('graficaDeudas').getContext('2d');
+    new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: nombresDeudas,
+            datasets: [{
+                label: 'Monto',
+                data: montosDeudas,
+                backgroundColor: [
+                    '#4361ee', '#2ecc71', '#e74c3c', '#f39c12',
+                    '#9b59b6', '#1abc9c', '#e67e22', '#3498db'
+                ],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            plugins: { legend: { position: 'bottom' } },
+        }
+    });
+
 </script>
 
 {% endblock %}
