@@ -70,6 +70,12 @@
                         data-bs-target="#modalPagar">
                         Pagar
                     </button>
+                    <button class="btn btn-warning btn-sm"
+                        onclick="document.getElementById('formCargo').action='/deudas/agregar/{{ p['id'] }}';"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCargo">
+                        + Cargo
+                    </button>
                 </td>
             </tr>
             {% endfor %}
@@ -97,6 +103,27 @@
                         <input type="number" name="monto" class="form-control" placeholder="0.00" step="0.01" required>
                     </div>
                     <button type="submit" class="btn btn-primary w-100">Registrar pago</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal agregar cargo -->
+<div class="modal fade" id="modalCargo" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 16px;">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold">Agregar cargo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCargo" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">MONTO A AGREGAR</label>
+                        <input type="number" name="monto" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning w-100">Agregar cargo</button>
                 </form>
             </div>
         </div>

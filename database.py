@@ -58,6 +58,15 @@ def pagar_deuda(user_id,id,monto):
         ''', (monto,user_id,id))
     conn.commit()
     conn.close()
+
+def agregar_ala_deuda(user_id,id,monto):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''
+        UPDATE deudas SET monto_total = (monto_total + ?) WHERE user_id = ? AND id = ?
+        ''', (monto,user_id,id))
+    conn.commit()
+    conn.close()
     
 
 def obtener_transacciones(user_id):

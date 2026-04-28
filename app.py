@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template, session, g
 from werkzeug.security import check_password_hash
-from database import crear_tablas, pagar_deuda,obtener_deuda_del_mes,obtener_gastos_por_categoria,registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
+from database import crear_tablas, agregar_ala_deuda,pagar_deuda,obtener_deuda_del_mes,obtener_gastos_por_categoria,registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
 from datetime import date
 
 app = Flask(__name__)
@@ -83,6 +83,13 @@ def pagar_deudas(id):
     user_id = session['user_id']
     monto = float(request.form['monto'])
     pagar_deuda(user_id,id,monto)
+    return redirect(url_for('deudas'))
+
+@app.route('/deudas/agregar/<int:id>',methods=['POST'])
+def agregar_deuda_total(id):
+    user_id = session['user_id']
+    monto = float(request.form['monto'])
+    agregar_ala_deuda(user_id,id,monto)
     return redirect(url_for('deudas'))
 
 @app.route('/deudas/agregar', methods=['POST'])
