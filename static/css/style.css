@@ -135,3 +135,34 @@ body.login-body {
     font-size: 1.1rem;
     flex-shrink: 0;
 }
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 56px;
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1030;
+    }
+
+    .main-content {
+        max-width: 100%;
+    }
+}
+
+.inversion-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    border: 1px solid #f0f0f0;
+}
+
+.rendimiento-valor {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0.2rem 0;
+}

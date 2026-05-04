@@ -250,6 +250,12 @@ def crear_tablas():
             valor_actual    REAL NOT NULL,
             fecha           TEXT NOT NULL
         );
+        CREATE TABLE IF NOT EXISTS historial_inversiones (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            inversion_id    INTEGER NOT NULL REFERENCES inversiones(id),
+            fecha           TEXT NOT NULL,
+            valor           REAL NOT NULL
+        );
     ''')
     conn.commit()
     conn.close()
