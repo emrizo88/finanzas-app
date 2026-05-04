@@ -7,73 +7,81 @@
         <h2 class="fw-bold mb-0">Dashboard</h2>
         <small class="text-muted">{{ mes }}</small>
     </div>
-    <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#modalTransaccion">
-        <i class="bi bi-plus-lg me-1"></i> Registrar Gasto/Ingreso
+    <button class="btn btn-primary px-3" data-bs-toggle="modal" data-bs-target="#modalTransaccion">
+        <i class="bi bi-plus-lg me-1"></i>
+        <span class="d-none d-md-inline">Registrar Gasto/Ingreso</span>
+        <span class="d-md-none">Registrar</span>
     </button>
 </div>
 
 <!-- Tarjetas resumen -->
-<div class="row g-4 mb-4">
-    <div class="col-md-4">
-        <div class="tarjeta">
-            <div class="d-flex align-items-center gap-2 mb-2">
-                <div class="icono-tarjeta" style="background:#eafaf1; color:#2ecc71;">
+<div class="row g-3 g-md-4 mb-4">
+    <div class="col-4 col-md-4">
+        <div class="tarjeta p-2 p-md-3">
+            <div class="d-flex align-items-center gap-2 mb-1 mb-md-2">
+                <div class="icono-tarjeta d-none d-md-flex" style="background:#eafaf1; color:#2ecc71;">
                     <i class="bi bi-arrow-down-circle-fill"></i>
                 </div>
-                <h6 class="mb-0">Ingresos del mes</h6>
+                <h6 class="mb-0" style="font-size: clamp(0.7rem, 2vw, 1rem);">Ingresos</h6>
             </div>
-            <div class="monto color-ingreso">${{ '%.2f' | format(resumen['ingresos']) }}</div>
+            <div class="monto color-ingreso" style="font-size: clamp(1rem, 4vw, 1.8rem);">
+                ${{ '%.2f' | format(resumen['ingresos']) }}
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="tarjeta">
-            <div class="d-flex align-items-center gap-2 mb-2">
-                <div class="icono-tarjeta" style="background:#ffeaea; color:#e74c3c;">
+    <div class="col-4 col-md-4">
+        <div class="tarjeta p-2 p-md-3">
+            <div class="d-flex align-items-center gap-2 mb-1 mb-md-2">
+                <div class="icono-tarjeta d-none d-md-flex" style="background:#ffeaea; color:#e74c3c;">
                     <i class="bi bi-arrow-up-circle-fill"></i>
                 </div>
-                <h6 class="mb-0">Gastos del mes</h6>
+                <h6 class="mb-0" style="font-size: clamp(0.7rem, 2vw, 1rem);">Gastos</h6>
             </div>
-            <div class="monto color-gasto">${{ '%.2f' | format(resumen['gastos']) }}</div>
+            <div class="monto color-gasto" style="font-size: clamp(1rem, 4vw, 1.8rem);">
+                ${{ '%.2f' | format(resumen['gastos']) }}
+            </div>
         </div>
     </div>
-    <div class="col-md-4">
-        <div class="tarjeta">
-            <div class="d-flex align-items-center gap-2 mb-2">
-                <div class="icono-tarjeta" style="background:#eef0ff; color:#4361ee;">
+    <div class="col-4 col-md-4">
+        <div class="tarjeta p-2 p-md-3">
+            <div class="d-flex align-items-center gap-2 mb-1 mb-md-2">
+                <div class="icono-tarjeta d-none d-md-flex" style="background:#eef0ff; color:#4361ee;">
                     <i class="bi bi-wallet2"></i>
                 </div>
-                <h6 class="mb-0">Balance</h6>
+                <h6 class="mb-0" style="font-size: clamp(0.7rem, 2vw, 1rem);">Balance</h6>
             </div>
-            <div class="monto color-balance">${{ '%.2f' | format(resumen['balance']) }}</div>
+            <div class="monto color-balance" style="font-size: clamp(1rem, 4vw, 1.8rem);">
+                ${{ '%.2f' | format(resumen['balance']) }}
+            </div>
         </div>
     </div>
 </div>
 
 <!-- Gráficas fila 1 -->
-<div class="row g-4 mb-4">
-    <div class="col-md-4">
+<div class="row g-3 g-md-4 mb-4">
+    <div class="col-12 col-md-4">
         <div class="tarjeta text-center h-100">
             <h6 class="mb-3">Ingresos vs Gastos</h6>
-            <canvas id="graficaMes"></canvas>
+            <canvas id="graficaMes" style="max-height: 220px;"></canvas>
         </div>
     </div>
-    <div class="col-md-8">
+    <div class="col-12 col-md-8">
         <div class="tarjeta h-100">
             <h6 class="mb-3">Gastos por categoría</h6>
-            <canvas id="graficaCategorias"></canvas>
+            <canvas id="graficaCategorias" style="max-height: 220px;"></canvas>
         </div>
     </div>
 </div>
 
 <!-- Fila 2 -->
-<div class="row g-4">
-    <div class="col-md-8">
+<div class="row g-3 g-md-4">
+    <div class="col-12 col-md-8">
         <div class="tarjeta">
             <h6 class="mb-3">Deudas pendientes</h6>
-            <canvas id="graficaDeudas"></canvas>
+            <canvas id="graficaDeudas" style="max-height: 220px;"></canvas>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-12 col-md-4">
         <div class="tarjeta">
             <h6 class="mb-3">Rendimiento inversiones</h6>
             <div class="d-flex flex-column gap-3">
@@ -99,7 +107,7 @@
 
 <!-- Modal registrar transacción -->
 <div class="modal fade" id="modalTransaccion" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 16px;">
             <div class="modal-header border-0">
                 <h5 class="modal-title fw-bold">Registrar transacción</h5>
