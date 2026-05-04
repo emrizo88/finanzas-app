@@ -12,8 +12,8 @@
     </button>
 </div>
 
-<!-- Tabla -->
-<div class="tabla-card">
+<!-- Vista desktop -->
+<div class="tabla-card d-none d-md-block">
     <table class="table table-hover mb-0">
         <thead>
             <tr>
@@ -42,8 +42,7 @@
                     {% set porcentaje = (p['monto_pagado'] / p['monto_total'] * 100) if p['monto_total'] > 0 else 0 %}
                     <div class="d-flex align-items-center gap-2">
                         <div class="progress flex-grow-1">
-                            <div class="progress-bar bg-success"
-                                role="progressbar"
+                            <div class="progress-bar bg-success" role="progressbar"
                                 style="width: {{ [porcentaje, 100] | min }}%">
                             </div>
                         </div>
@@ -54,16 +53,12 @@
                     <div class="d-flex gap-1">
                         <button class="btn btn-success btn-sm"
                             onclick="document.getElementById('formPagar').action='/deudas/pagar/{{ p['id'] }}';"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalPagar"
-                            title="Registrar pago">
+                            data-bs-toggle="modal" data-bs-target="#modalPagar" title="Registrar pago">
                             <i class="bi bi-check-lg"></i>
                         </button>
                         <button class="btn btn-warning btn-sm"
                             onclick="document.getElementById('formCargo').action='/deudas/agregar/{{ p['id'] }}';"
-                            data-bs-toggle="modal"
-                            data-bs-target="#modalCargo"
-                            title="Agregar cargo">
+                            data-bs-toggle="modal" data-bs-target="#modalCargo" title="Agregar cargo">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                         <form action="/deudas/eliminar/{{ p['id'] }}" method="POST">
@@ -87,9 +82,73 @@
     </table>
 </div>
 
-<!-- Modal agregar deuda -->
+<!-- Vista móvil — cards -->
+<div class="d-md-none d-flex flex-column gap-3">
+    {% for p in deudas %}
+    {% set porcentaje = (p['monto_pagado'] / p['monto_total'] * 100) if p['monto_total'] > 0 else 0 %}
+    <div class="tarjeta p-3">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <div>
+                <div class="fw-semibold">{{ p['nombre'] }}</div>
+                <small class="text-muted">{{ p['fecha_inicio'] }} — {{ p['fecha_limite'] or 'Sin límite' }}</small>
+            </div>
+            <span class="badge bg-light text-dark">{{ p['tasa_interes'] }}%</span>
+        </div>
+
+        <div class="row g-2 mb-3">
+            <div class="col-4 text-center">
+                <small class="text-muted d-block">Total</small>
+                <span class="fw-semibold">${{ '%.2f' | format(p['monto_total']) }}</span>
+            </div>
+            <div class="col-4 text-center">
+                <small class="text-muted d-block">Pagado</small>
+                <span class="color-ingreso fw-semibold">${{ '%.2f' | format(p['monto_pagado']) }}</span>
+            </div>
+            <div class="col-4 text-center">
+                <small class="text-muted d-block">Pendiente</small>
+                <span class="color-gasto fw-semibold">${{ '%.2f' | format(p['monto_pendiente']) }}</span>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <div class="progress flex-grow-1">
+                <div class="progress-bar bg-success" role="progressbar"
+                    style="width: {{ [porcentaje, 100] | min }}%">
+                </div>
+            </div>
+            <small class="text-muted">{{ porcentaje | round(0) | int }}%</small>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-success btn-sm flex-grow-1"
+                onclick="document.getElementById('formPagar').action='/deudas/pagar/{{ p['id'] }}';"
+                data-bs-toggle="modal" data-bs-target="#modalPagar">
+                <i class="bi bi-check-lg me-1"></i> Pagar
+            </button>
+            <button class="btn btn-warning btn-sm flex-grow-1"
+                onclick="document.getElementById('formCargo').action='/deudas/agregar/{{ p['id'] }}';"
+                data-bs-toggle="modal" data-bs-target="#modalCargo">
+                <i class="bi bi-plus-lg me-1"></i> Cargo
+            </button>
+            <form action="/deudas/eliminar/{{ p['id'] }}" method="POST">
+                <button type="submit" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+    {% if not deudas %}
+    <div class="text-center text-muted py-5">
+        <i class="bi bi-credit-card" style="font-size:2rem;"></i>
+        <p class="mt-2 mb-0">No hay deudas registradas</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Modales -->
 <div class="modal fade" id="modalDeuda" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 16px;">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold">Nueva deuda</h5>
@@ -126,9 +185,8 @@
     </div>
 </div>
 
-<!-- Modal pagar deuda -->
 <div class="modal fade" id="modalPagar" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 16px;">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold">Registrar pago</h5>
@@ -147,9 +205,8 @@
     </div>
 </div>
 
-<!-- Modal agregar cargo -->
 <div class="modal fade" id="modalCargo" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="border-radius: 16px;">
             <div class="modal-header border-0 pb-0">
                 <h5 class="modal-title fw-bold">Agregar cargo</h5>

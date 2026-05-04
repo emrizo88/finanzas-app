@@ -11,7 +11,7 @@
 <body>
 
 <!-- Navbar móvil -->
-<nav class="navbar navbar-dark d-md-none px-3" style="background:#1a1a2e;">
+<nav class="navbar navbar-dark d-md-none px-3" style="background:#1a1a2e; height:56px;">
     <span class="navbar-brand fw-bold">💰 Finanzas</span>
     <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMobile">
         <span class="navbar-toggler-icon"></span>
@@ -19,29 +19,35 @@
 </nav>
 
 <!-- Offcanvas móvil -->
-<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile" style="width:260px;">
-    <div class="offcanvas-header border-bottom">
-        <h5 class="offcanvas-title fw-bold">💰 Finanzas</h5>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMobile" style="width:280px;">
+    <div class="offcanvas-header border-bottom py-4">
+        <div>
+            <h5 class="offcanvas-title fw-bold mb-0">💰 Finanzas</h5>
+            <small class="text-muted">Panel personal</small>
+        </div>
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
-    <div class="offcanvas-body d-flex flex-column p-3">
-        <a href="{{ url_for('index') }}" class="nav-link">
-            <i class="bi bi-grid-1x2"></i> Dashboard
-        </a>
-        <a href="{{ url_for('transacciones') }}" class="nav-link">
-            <i class="bi bi-arrow-left-right"></i> Transacciones
-        </a>
-        <a href="{{ url_for('presupuestos_page') }}" class="nav-link">
-            <i class="bi bi-pie-chart"></i> Presupuestos
-        </a>
-        <a href="{{ url_for('deudas') }}" class="nav-link">
-            <i class="bi bi-credit-card"></i> Deudas
-        </a>
-        <a href="{{ url_for('inversiones') }}" class="nav-link">
-            <i class="bi bi-graph-up-arrow"></i> Inversiones
-        </a>
+    <div class="offcanvas-body d-flex flex-column p-4">
 
-        <div class="usuario-card mt-auto mb-2">
+        <div class="d-flex flex-column gap-1">
+            <a href="{{ url_for('index') }}" class="nav-link nav-link-mobile">
+                <i class="bi bi-grid-1x2"></i> Dashboard
+            </a>
+            <a href="{{ url_for('transacciones') }}" class="nav-link nav-link-mobile">
+                <i class="bi bi-arrow-left-right"></i> Transacciones
+            </a>
+            <a href="{{ url_for('presupuestos_page') }}" class="nav-link nav-link-mobile">
+                <i class="bi bi-pie-chart"></i> Presupuestos
+            </a>
+            <a href="{{ url_for('deudas') }}" class="nav-link nav-link-mobile">
+                <i class="bi bi-credit-card"></i> Deudas
+            </a>
+            <a href="{{ url_for('inversiones') }}" class="nav-link nav-link-mobile">
+                <i class="bi bi-graph-up-arrow"></i> Inversiones
+            </a>
+        </div>
+
+        <div class="usuario-card mt-auto mb-3">
             <div class="usuario-avatar">
                 <i class="bi bi-person-fill"></i>
             </div>
@@ -51,7 +57,7 @@
             </div>
         </div>
 
-        <a href="{{ url_for('logout') }}" class="nav-link text-danger">
+        <a href="{{ url_for('logout') }}" class="nav-link nav-link-mobile text-danger">
             <i class="bi bi-box-arrow-left"></i> Cerrar sesión
         </a>
     </div>
@@ -59,7 +65,7 @@
 
 <div class="d-flex">
 
-    <!-- Sidebar desktop — oculto en móvil -->
+    <!-- Sidebar desktop -->
     <nav class="sidebar d-none d-md-flex flex-column p-4">
         <h4 class="fw-bold mb-1">💰 Finanzas</h4>
         <small class="text-muted mb-4">Panel personal</small>

@@ -166,3 +166,21 @@ body.login-body {
     line-height: 1.2;
     margin: 0.2rem 0;
 }
+
+
+/* Nav links móvil — más espaciado para iPhone */
+.nav-link-mobile {
+    color: #6c757d;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+}
+
+.nav-link-mobile:hover {
+    background: #f0f4ff;
+    color: #4361ee;
+}
