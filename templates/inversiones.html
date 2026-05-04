@@ -3,34 +3,13 @@
 {% block contenido %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0">Inversiones</h2>
-</div>
-
-<!-- Formulario -->
-<div class="form-card">
-    <h6 class="text-muted mb-3">AGREGAR INVERSIÓN</h6>
-    <form action="/inversiones/agregar" method="POST">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <input type="text" name="nombre" class="form-control" placeholder="Nombre de la inversión" required>
-            </div>
-            <div class="col-md-2">
-                <input type="text" name="tipo" class="form-control" placeholder="Tipo (ETF, Acción...)" required>
-            </div>
-            <div class="col-md-2">
-                <input type="number" name="monto_invertido" class="form-control" placeholder="Monto invertido" step="0.01" required>
-            </div>
-            <div class="col-md-2">
-                <input type="number" name="valor_actual" class="form-control" placeholder="Valor actual" step="0.01" required>
-            </div>
-            <div class="col-md-2">
-                <input type="date" name="fecha" class="form-control" required>
-            </div>
-            <div class="col-md-1">
-                <button type="submit" class="btn btn-primary w-100">+</button>
-            </div>
-        </div>
-    </form>
+    <div>
+        <h2 class="fw-bold mb-0">Inversiones</h2>
+        <small class="text-muted">Seguimiento de tu portafolio</small>
+    </div>
+    <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#modalInversion">
+        <i class="bi bi-plus-lg me-1"></i> Agregar
+    </button>
 </div>
 
 <!-- Tabla -->
@@ -44,6 +23,7 @@
                 <th>Valor Actual</th>
                 <th>Fecha</th>
                 <th>Ganancia / Pérdida</th>
+                <th>Rendimiento</th>
                 <th></th>
             </tr>
         </thead>
@@ -54,24 +34,72 @@
                 <td><span class="badge bg-light text-dark">{{ p['tipo'] }}</span></td>
                 <td>${{ '%.2f' | format(p['monto_invertido']) }}</td>
                 <td>${{ '%.2f' | format(p['valor_actual']) }}</td>
-                <td>{{ p['fecha'] }}</td>
+                <td class="text-muted">{{ p['fecha'] }}</td>
                 <td class="fw-semibold {{ 'color-ingreso' if p['resultado'] >= 0 else 'color-gasto' }}">
                     {{ '+' if p['resultado'] >= 0 else '' }}${{ '%.2f' | format(p['resultado']) }}
                 </td>
                 <td>
+                    {% set rendimiento = (p['resultado'] / p['monto_invertido'] * 100) if p['monto_invertido'] > 0 else 0 %}
+                    <span class="badge {{ 'bg-success' if rendimiento >= 0 else 'bg-danger' }} bg-opacity-10 {{ 'text-success' if rendimiento >= 0 else 'text-danger' }}">
+                        {{ '+' if rendimiento >= 0 else '' }}{{ rendimiento | round(2) }}%
+                    </span>
+                </td>
+                <td>
                     <form action="/inversiones/eliminar/{{ p['id'] }}" method="POST">
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </form>
                 </td>
             </tr>
             {% endfor %}
             {% if not inversiones %}
             <tr>
-                <td colspan="7" class="text-center text-muted py-4">No hay inversiones registradas</td>
+                <td colspan="8" class="text-center text-muted py-5">
+                    <i class="bi bi-graph-up-arrow" style="font-size:2rem;"></i>
+                    <p class="mt-2 mb-0">No hay inversiones registradas</p>
+                </td>
             </tr>
             {% endif %}
         </tbody>
     </table>
+</div>
+
+<!-- Modal agregar inversión -->
+<div class="modal fade" id="modalInversion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 16px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Nueva inversión</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/inversiones/agregar" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">NOMBRE</label>
+                        <input type="text" name="nombre" class="form-control" placeholder="Ej. S&P 500, Tesla..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">TIPO</label>
+                        <input type="text" name="tipo" class="form-control" placeholder="ETF, Acción, Crypto..." required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">MONTO INVERTIDO</label>
+                        <input type="number" name="monto_invertido" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">VALOR ACTUAL</label>
+                        <input type="number" name="valor_actual" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small">FECHA</label>
+                        <input type="date" name="fecha" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Agregar inversión</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}

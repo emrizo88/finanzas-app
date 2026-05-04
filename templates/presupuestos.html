@@ -3,28 +3,13 @@
 {% block contenido %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold mb-0">Presupuestos</h2>
-</div>
-
-<!-- Formulario -->
-<div class="form-card">
-    <h6 class="text-muted mb-3">AGREGAR PRESUPUESTO</h6>
-    <form action="/presupuestos/agregar" method="POST">
-        <div class="row g-3">
-            <div class="col-md-3">
-                <input type="month" name="mes" class="form-control" required>
-            </div>
-            <div class="col-md-4">
-                <input type="text" name="categoria" class="form-control" placeholder="Categoría" required>
-            </div>
-            <div class="col-md-3">
-                <input type="number" name="monto_limite" class="form-control" placeholder="Monto límite" step="0.01" required>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">Agregar</button>
-            </div>
-        </div>
-    </form>
+    <div>
+        <h2 class="fw-bold mb-0">Presupuestos</h2>
+        <small class="text-muted">Mes actual</small>
+    </div>
+    <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#modalPresupuesto">
+        <i class="bi bi-plus-lg me-1"></i> Agregar
+    </button>
 </div>
 
 <!-- Tabla -->
@@ -36,6 +21,7 @@
                 <th>Categoría</th>
                 <th>Límite</th>
                 <th>Gastado</th>
+                <th>Disponible</th>
                 <th>Progreso</th>
                 <th></th>
             </tr>
@@ -43,11 +29,16 @@
         <tbody>
             {% for p in presupuestos %}
             <tr>
-                <td>{{ p['mes'] }}</td>
+                <td class="text-muted">{{ p['mes'] }}</td>
                 <td class="fw-semibold">{{ p['categoria'] }}</td>
                 <td>${{ '%.2f' | format(p['monto_limite']) }}</td>
-                <td>${{ '%.2f' | format(p['monto_gastado']) }}</td>
-                <td style="min-width: 160px;">
+                <td class="{{ 'color-gasto' if p['porcentaje'] >= 75 else 'color-ingreso' }}">
+                    ${{ '%.2f' | format(p['monto_gastado']) }}
+                </td>
+                <td class="fw-semibold">
+                    ${{ '%.2f' | format(p['monto_limite'] - p['monto_gastado']) }}
+                </td>
+                <td style="min-width: 180px;">
                     <div class="d-flex align-items-center gap-2">
                         <div class="progress flex-grow-1">
                             <div class="progress-bar {{ 'bg-danger' if p['porcentaje'] >= 100 else 'bg-warning' if p['porcentaje'] >= 75 else 'bg-success' }}"
@@ -60,18 +51,52 @@
                 </td>
                 <td>
                     <form action="/presupuestos/eliminar/{{ p['id'] }}" method="POST">
-                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        <button type="submit" class="btn btn-outline-danger btn-sm" title="Eliminar">
+                            <i class="bi bi-trash"></i>
+                        </button>
                     </form>
                 </td>
             </tr>
             {% endfor %}
             {% if not presupuestos %}
             <tr>
-                <td colspan="6" class="text-center text-muted py-4">No hay presupuestos para este mes</td>
+                <td colspan="7" class="text-center text-muted py-5">
+                    <i class="bi bi-pie-chart" style="font-size:2rem;"></i>
+                    <p class="mt-2 mb-0">No hay presupuestos para este mes</p>
+                </td>
             </tr>
             {% endif %}
         </tbody>
     </table>
+</div>
+
+<!-- Modal agregar presupuesto -->
+<div class="modal fade" id="modalPresupuesto" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 16px;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Nuevo presupuesto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/presupuestos/agregar" method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">MES</label>
+                        <input type="month" name="mes" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label text-muted small">CATEGORÍA</label>
+                        <input type="text" name="categoria" class="form-control" placeholder="Ej. Comida, Renta..." required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small">MONTO LÍMITE</label>
+                        <input type="number" name="monto_limite" class="form-control" placeholder="0.00" step="0.01" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Agregar presupuesto</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
