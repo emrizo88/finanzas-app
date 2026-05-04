@@ -1,6 +1,6 @@
 from flask import Flask, request, redirect, url_for, render_template, session, g
 from werkzeug.security import check_password_hash
-from database import crear_tablas, agregar_ala_deuda,pagar_deuda,obtener_deuda_del_mes,obtener_gastos_por_categoria,registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
+from database import crear_tablas, obtener_historial_todas,obtener_historial, agregar_historial, actualizar_valor_inversion,agregar_ala_deuda,pagar_deuda,obtener_deuda_del_mes,obtener_gastos_por_categoria,registrar_usuario, obtener_usuario, agregar_inversion_db, eliminar_inversion_db, obtener_inversiones, eliminar_deuda, agregar_deuda, obtener_deudas, eliminar_presupuesto_db, obtener_presupuestos, agregar_presupuesto_db, actualizar_monto_gastado, obtener_transacciones, agregar_transaccion, eliminar_transaccion, obtener_resumen_mes
 from utils import obtener_rend_inversiones
 from datetime import date
 
@@ -117,7 +117,15 @@ def eliminar_deudas(id):
 def inversiones():
     user_id = session['user_id']
     lista = obtener_inversiones(user_id)
-    return render_template('inversiones.html', inversiones=lista)
+    historial = obtener_historial_todas(user_id)
+    historial_agrupado = {}
+    for h in historial:
+        h = dict(h)
+        nombre = h['nombre']
+        if nombre not in historial_agrupado:
+            historial_agrupado[nombre] = []
+        historial_agrupado[nombre].append({'fecha':h['fecha'], 'valor': h['valor']})
+    return render_template('inversiones.html', inversiones=lista,historial=historial_agrupado)
 
 @app.route('/inversiones/agregar', methods=['POST'])
 def agregar_inversion():
@@ -128,6 +136,15 @@ def agregar_inversion():
     valor_actual = float(request.form['valor_actual'])
     fecha = request.form.get('fecha')
     agregar_inversion_db(user_id, nombre, tipo, monto_invertido, valor_actual, fecha)
+    return redirect(url_for('inversiones'))
+
+@app.route('/inversiones/actualizar/<int:id>', methods=['POST'])
+def actualizar_inversion(id):
+    user_id = session['user_id']
+    fecha = date.today()
+    valor_actual = request.form['valor_nuevo']
+    actualizar_valor_inversion(user_id,id,valor_actual)
+    agregar_historial(id,fecha,valor_actual)
     return redirect(url_for('inversiones'))
 
 @app.route('/inversiones/eliminar/<int:id>', methods=['POST'])

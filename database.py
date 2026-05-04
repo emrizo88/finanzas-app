@@ -273,3 +273,32 @@ def obtener_usuario(username):
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
     return cursor.fetchone()
+
+def agregar_historial(inversion_id, fecha, valor):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO historial_inversiones (inversion_id, fecha,valor) VALUES (?, ?, ?)', (inversion_id, fecha,valor))
+    conn.commit()
+    conn.close()
+
+def obtener_historial(inversion_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM historial_inversiones WHERE inversion_id = ? ORDER BY fecha DESC', (inversion_id,))
+    return cursor.fetchall()
+
+def obtener_historial_todas(user_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('SELECT i.nombre, h.fecha, h.valor FROM historial_inversiones h JOIN inversiones i ON h.inversion_id = i.id WHERE i.user_id = ? ORDER BY h.fecha ASC', (user_id,))
+    return cursor.fetchall()
+
+def actualizar_valor_inversion(user_id, id, valor_actual):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute('''  
+        UPDATE inversiones SET valor_actual = ?
+        WHERE id = ? AND user_id = ?
+    ''', (valor_actual, id, user_id,))
+    conn.commit()
+    conn.close()
